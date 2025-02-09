@@ -1,6 +1,6 @@
 {
     "name": "monorepo",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "monorepo-docker-nestjs project",
     "license": "ISC",
     "author": "isat",
@@ -8,10 +8,10 @@
     "main": "docker-compose.yml",
     "scripts": {
         "start:prod": "docker-compose -f docker-compose.prod.yml up --build",
-        "start:dev": "docker-compose -f docker-compose.dev.yml up --build"
+        "start:dev": "docker-compose -f docker-compose.dev.yml up --build",
+        "create:app": "node libs/create/script.js"
     },
     "devDependencies": {
-        "prettier": "^3.4.2",
-        "typescript": "^5.7.3"
+        "prettier": "^3.4.2"
     }
 }

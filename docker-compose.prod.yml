@@ -1,11 +1,8 @@
 services:
     project1:
-        volumes:
-            - ./apps/project1:/app
-            - ./apps/project1/node_modules:/app/node_modules
         build:
             context: ./apps/project1
-            dockerfile: docker/dockerfile.dev
+            dockerfile: docker/dockerfile.prod
         container_name: nest-app
         env_file:
             - ./apps/project1/.env
