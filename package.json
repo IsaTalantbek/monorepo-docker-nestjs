@@ -6,12 +6,17 @@
     "author": "isat",
     "type": "commonjs",
     "main": "docker-compose.yml",
+    "workspaces": [
+        "packages/*"
+    ],
     "scripts": {
         "start:prod": "docker-compose -f docker-compose.prod.yml up --build",
         "start:dev": "docker-compose -f docker-compose.dev.yml up --build",
-        "create:app": "node libs/create/script.js"
+        "create:app": "node libs/create/script.js",
+        "docker:clear": "docker system prune -af --volumes"
     },
     "devDependencies": {
+        "lerna": "^8.1.9",
         "prettier": "^3.4.2"
     }
 }

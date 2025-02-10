@@ -7,7 +7,7 @@ services:
         env_file:
             - ./apps/project1/.env
         ports:
-            - '${PROJECT_1_PORT}:3000'
+            - '${PROJECT_PORT_1}:3000'
         depends_on:
             - database
         restart: on-failure

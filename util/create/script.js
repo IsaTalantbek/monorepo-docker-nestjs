@@ -8,9 +8,12 @@ async function copyDir(src, dest) {
     await fs.promises.mkdir(dest, { recursive: true });
 
     const files = await fs.promises.readdir(src);
+
     const tasks = files.map(async (file) => {
         const srcPath = path.join(src, file);
+
         const destPath = path.join(dest, file);
+
         const stats = await fs.promises.stat(srcPath);
 
         if (stats.isDirectory()) {

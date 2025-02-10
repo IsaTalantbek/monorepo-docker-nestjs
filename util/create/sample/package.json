@@ -1,5 +1,5 @@
 {
-    "name": "project1",
+    "name": "project",
     "version": "0.0.1",
     "description": "Nestjs-test-project",
     "author": "isat",
@@ -17,7 +17,9 @@
         "@nestjs/config": "^4.0.0",
         "@nestjs/core": "^11.0.8",
         "@nestjs/platform-fastify": "^11.0.8",
+        "@prisma/client": "^6.3.1",
         "dotenv": "^16.4.7",
+        "prisma": "^6.3.1",
         "reflect-metadata": "^0.2.0",
         "rxjs": "^7.8.1"
     },

@@ -1,3 +1,10 @@
 /node_modules
+
+/util/create/sample/node_modules
+/util/create/sample/dist
+
 /apps/project1/node_modules
-/libs/create/sample/node_modules
+/apps/project1/dist
+
+/apps/project/node_modules
+/apps/project/dist
