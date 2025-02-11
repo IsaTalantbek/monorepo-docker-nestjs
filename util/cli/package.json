@@ -1,0 +1,9 @@
+{
+    "name": "pro",
+    "scripts": {
+        "build": "tsc -p tsconfig.build.json"
+    },
+    "bin": {
+        "pro": "./dist/bin/cli.js"
+    }
+}

@@ -18,9 +18,7 @@
         "@nestjs/core": "^11.0.8",
         "@nestjs/platform-fastify": "^11.0.8",
         "@prisma/client": "^6.3.1",
-        "depen": "git+https://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@github.com/IsaTalantbek/depen.git",
         "dotenv": "^16.4.7",
-        "monorepo": "file:../..",
         "prisma": "^6.3.1",
         "reflect-metadata": "^0.2.0",
         "rxjs": "^7.8.1"
