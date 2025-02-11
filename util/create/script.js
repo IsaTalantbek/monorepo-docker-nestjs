@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const srcPath = path.join(process.cwd(), 'libs', 'create', 'sample'); // исходная папка
+const srcPath = path.join(process.cwd(), 'util', 'create', 'sample'); // исходная папка
 const destPath = path.join(process.cwd(), 'apps', 'project'); // целевая папка
 
 async function copyDir(src, dest) {
