@@ -1,11 +1,11 @@
 services:
     project1:
         build:
-            context: ./apps/project1
+            context: ./apps/project
             dockerfile: docker/dockerfile.prod
         container_name: nest-app
         env_file:
-            - ./apps/project1/.env
+            - ./apps/project/.env
         ports:
             - '${PROJECT_PORT_1}:3000'
         depends_on:

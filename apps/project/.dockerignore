@@ -1,4 +1,5 @@
 .gitignore
+.git
 .env
 nest-cli.json
 node_modules

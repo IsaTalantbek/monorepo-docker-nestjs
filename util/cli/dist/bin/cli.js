@@ -8,39 +8,141 @@ const yargs_1 = __importDefault(require("yargs"));
 const create_1 = require("../scripts/create/create");
 const install_1 = require("../scripts/dependencies/install");
 const clear_1 = require("../scripts/dependencies/clear");
-// Команда 'create' с дополнительным аргументом для типа
-yargs_1.default.command({
+const npm_1 = require("../scripts/npm/npm");
+const run_1 = require("../scripts/run/run");
+const run_compose_1 = require("../scripts/compose/run.compose");
+yargs_1.default
+    .command({
     command: 'create <type>',
     describe: 'создать app',
     builder: (yargs) => {
-        return yargs.positional('type', {
-            describe: 'Тип проекта (app)',
+        return yargs
+            .positional('type', {
+            describe: 'тип проекта (app)',
             type: 'string'
+        })
+            .option('silent', {
+            alias: 's',
+            type: 'boolean',
+            description: 'запуск без вывода в консоль',
+            default: false
         });
     },
     handler: create_1.createHandler
-});
-yargs_1.default.command({
+})
+    .help();
+yargs_1.default
+    .command({
     command: 'install <appName>',
     describe: 'установить зависимости для микросервиса',
     builder: (yargs) => {
-        return yargs.positional('appName', {
-            describe: 'название микросервиса',
+        return yargs
+            .positional('appName', {
+            describe: 'название проекта внутри pro-cli',
             type: 'string'
+        })
+            .option('silent', {
+            alias: 's',
+            type: 'boolean',
+            description: 'запуск без вывода в консоль',
+            default: false
         });
     },
     handler: install_1.installHandler
-});
-yargs_1.default.command({
+})
+    .help();
+yargs_1.default
+    .command({
     command: 'clear <appName>',
     describe: 'очистить зависимости для микросервиса',
     builder: (yargs) => {
-        return yargs.positional('appName', {
-            describe: 'название микросервиса',
+        return yargs
+            .positional('appName', {
+            describe: 'название проекта внутри pro-cli',
             type: 'string'
+        })
+            .option('silent', {
+            alias: 's',
+            type: 'boolean',
+            description: 'запуск без вывода в консоль',
+            default: false
         });
     },
     handler: clear_1.clearHandler
+})
+    .help();
+yargs_1.default
+    .command({
+    command: 'npm <appName> [cmd..]',
+    describe: 'позволяет использовать npm команды внутри проектов',
+    builder: (yargs) => {
+        return yargs
+            .positional('appName', {
+            describe: 'название проекта внутри pro-cli',
+            type: 'string'
+        })
+            .positional('cmd', {
+            describe: 'команда (npm)',
+            type: 'string',
+            array: true
+        })
+            .option('silent', {
+            alias: 's',
+            type: 'boolean',
+            description: 'запуск без вывода в консоль',
+            default: false
+        });
+    },
+    handler: npm_1.npmHandler
+})
+    .help();
+yargs_1.default.command({
+    command: 'run <appName>',
+    describe: 'запускает проект',
+    builder: (yargs) => {
+        return yargs
+            .positional('appName', {
+            describe: 'название проекта внутри pro-cli',
+            type: 'string'
+        })
+            .option('port', {
+            alias: 'p',
+            type: 'string',
+            description: 'на какой порт перебросить докер контейнер. Использовать только с -d',
+            default: '3000'
+        })
+            .option('docker', {
+            alias: 'd',
+            type: 'boolean',
+            describtion: 'запуск докерфайла, вместо обычного запуска',
+            default: false
+        })
+            .option('silent', {
+            alias: 's',
+            type: 'boolean',
+            description: 'запуск без вывода в консоль',
+            default: false
+        });
+    },
+    handler: run_1.runHandler
+});
+yargs_1.default.command({
+    command: 'compose run <composeName>',
+    describe: 'запускает докер композицию',
+    builder: (yargs) => {
+        return yargs
+            .positional('composeName', {
+            describe: 'название композиции внутри pro-cli',
+            type: 'string'
+        })
+            .option('silent', {
+            alias: 's',
+            type: 'boolean',
+            description: 'Запуск без вывода в консоль',
+            default: false
+        });
+    },
+    handler: run_compose_1.runComposeHandler
 });
 // Обработка всех команд
 yargs_1.default.parse();

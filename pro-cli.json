@@ -1,0 +1,9 @@
+{
+    "projects": {
+        "app": "apps/project"
+    },
+    "docker-compositions": {
+        "start": "docker-compose.prod.yml",
+        "start:dev": "docker-compose.dev.yml"
+    }
+}

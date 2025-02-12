@@ -8,10 +8,6 @@
     "type": "commonjs",
     "main": "docker-compose.prod.yml",
     "scripts": {
-        "start:prod": "docker-compose -f docker-compose.prod.yml up --build",
-        "start:dev": "docker-compose -f docker-compose.dev.yml up --build",
-        "create:app": "node util/create/app/script.js",
-        "install:app1": "npm install --prefix apps/project1",
         "docker:clear": "docker system prune -af --volumes"
     },
     "devDependencies": {
