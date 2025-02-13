@@ -8,9 +8,9 @@ const yargs_1 = __importDefault(require("yargs"));
 const create_1 = require("../scripts/create/create");
 const install_1 = require("../scripts/dependencies/install");
 const clear_1 = require("../scripts/dependencies/clear");
-const npm_1 = require("../scripts/npm/npm");
+const cmd_1 = require("../scripts/cmd/cmd");
 const run_1 = require("../scripts/run/run");
-const run_compose_1 = require("../scripts/compose/run.compose");
+const compose_1 = require("../scripts/compose/compose");
 yargs_1.default
     .command({
     command: 'create <type>',
@@ -73,8 +73,8 @@ yargs_1.default
     .help();
 yargs_1.default
     .command({
-    command: 'npm <appName> [cmd..]',
-    describe: 'позволяет использовать npm команды внутри проектов',
+    command: 'cmd <appName> [cmd..]',
+    describe: 'позволяет использовать команды внутри проектов',
     builder: (yargs) => {
         return yargs
             .positional('appName', {
@@ -82,7 +82,7 @@ yargs_1.default
             type: 'string'
         })
             .positional('cmd', {
-            describe: 'команда (npm)',
+            describe: 'команда',
             type: 'string',
             array: true
         })
@@ -93,7 +93,7 @@ yargs_1.default
             default: false
         });
     },
-    handler: npm_1.npmHandler
+    handler: cmd_1.cmdHandler
 })
     .help();
 yargs_1.default.command({
@@ -104,6 +104,12 @@ yargs_1.default.command({
             .positional('appName', {
             describe: 'название проекта внутри pro-cli',
             type: 'string'
+        })
+            .option('formatting', {
+            alias: 'f',
+            type: 'boolean',
+            description: 'конвертировать CRLF в LF перед запуском? По дефолту да. Выберите флажок если ненадо',
+            default: true
         })
             .option('port', {
             alias: 'p',
@@ -127,22 +133,46 @@ yargs_1.default.command({
     handler: run_1.runHandler
 });
 yargs_1.default.command({
-    command: 'compose run <composeName>',
-    describe: 'запускает докер композицию',
+    command: 'compose <composeName>',
+    describe: 'взаимодействие с докер композицией',
     builder: (yargs) => {
         return yargs
             .positional('composeName', {
             describe: 'название композиции внутри pro-cli',
             type: 'string'
         })
+            .option('run', {
+            alias: 'r',
+            type: 'boolean',
+            description: 'запускает докер композицию',
+            default: false
+        })
+            .option('end', {
+            alias: 'e',
+            type: 'boolean',
+            description: 'удаляет или останавливает композицию. Добавьте еще -d, если хотите удалить контейнеры',
+            default: false
+        })
+            .option('del', {
+            alias: 'd',
+            type: 'boolean',
+            description: 'удаляет контейнеры в композиции',
+            default: false
+        })
+            .option('formatting', {
+            alias: 'f',
+            type: 'boolean',
+            description: 'конвертировать CRLF в LF перед запуском? По дефолту да. Выберите флажок если ненадо',
+            default: true
+        })
             .option('silent', {
             alias: 's',
             type: 'boolean',
-            description: 'Запуск без вывода в консоль',
+            description: 'запуск без вывода в консоль',
             default: false
         });
     },
-    handler: run_compose_1.runComposeHandler
+    handler: compose_1.composeHandler
 });
 // Обработка всех команд
 yargs_1.default.parse();

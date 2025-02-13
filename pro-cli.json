@@ -3,7 +3,13 @@
         "app": "apps/project"
     },
     "docker-compositions": {
-        "start": "docker-compose.prod.yml",
-        "start:dev": "docker-compose.dev.yml"
+        "start": {
+            "file": "docker-compose.prod.yml",
+            "projects": ["app"]
+        },
+        "start:dev": {
+            "file": "docker-compose.dev.yml",
+            "projects": ["app"]
+        }
     }
 }
