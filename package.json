@@ -5,12 +5,13 @@
     "description": "monorepo-docker-nestjs project",
     "license": "ISC",
     "author": "isat",
-    "type": "commonjs",
+    "type": "module",
     "main": "docker-compose.prod.yml",
     "scripts": {
         "docker:clear": "docker system prune -af --volumes"
     },
     "devDependencies": {
+        "p-limit": "^6.2.0",
         "prettier": "^3.4.2",
         "yargs": "^17.7.2"
     }

@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.findCompose = findCompose;
-const read_config_1 = require("./read-config");
-function findCompose(composeName) {
-    const configFile = (0, read_config_1.giveConfig)();
+import { giveConfig } from './read-config.js';
+export function findCompose(composeName) {
+    const configFile = giveConfig();
     const composeConfig = configFile['docker-compositions'][composeName];
     const config = JSON.stringify(composeConfig);
     if (!composeConfig) {

@@ -1,57 +1,46 @@
 #!/usr/bin/env node
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const yargs_1 = __importDefault(require("yargs"));
-const create_1 = require("../scripts/create/create");
-const install_1 = require("../scripts/dependencies/install");
-const clear_1 = require("../scripts/dependencies/clear");
-const cmd_1 = require("../scripts/cmd/cmd");
-const run_1 = require("../scripts/run/run");
-const compose_1 = require("../scripts/compose/compose");
-yargs_1.default
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
+import { createHandler } from '../scripts/create/create.js';
+import { installHandler } from '../scripts/dependencies/install.js';
+import { clearHandler } from '../scripts/dependencies/clear.js';
+import { cmdHandler } from '../scripts/cmd/cmd.js';
+import { runHandler } from '../scripts/run/run.js';
+import { composeHandler } from '../scripts/compose/compose.js';
+yargs(hideBin(process.argv))
+    .scriptName('pro')
     .command({
     command: 'create <type>',
     describe: 'создать app',
-    builder: (yargs) => {
-        return yargs
-            .positional('type', {
-            describe: 'тип проекта (app)',
-            type: 'string'
-        })
-            .option('silent', {
-            alias: 's',
-            type: 'boolean',
-            description: 'запуск без вывода в консоль',
-            default: false
-        });
-    },
-    handler: create_1.createHandler
+    builder: (yargs) => yargs
+        .positional('type', {
+        describe: 'тип проекта (app)',
+        type: 'string'
+    })
+        .option('silent', {
+        alias: 's',
+        type: 'boolean',
+        description: 'запуск без вывода в консоль',
+        default: false
+    }),
+    handler: createHandler
 })
-    .help();
-yargs_1.default
     .command({
     command: 'install <appName>',
     describe: 'установить зависимости для микросервиса',
-    builder: (yargs) => {
-        return yargs
-            .positional('appName', {
-            describe: 'название проекта внутри pro-cli',
-            type: 'string'
-        })
-            .option('silent', {
-            alias: 's',
-            type: 'boolean',
-            description: 'запуск без вывода в консоль',
-            default: false
-        });
-    },
-    handler: install_1.installHandler
+    builder: (yargs) => yargs
+        .positional('appName', {
+        describe: 'название проекта внутри pro-cli',
+        type: 'string'
+    })
+        .option('silent', {
+        alias: 's',
+        type: 'boolean',
+        description: 'запуск без вывода в консоль',
+        default: false
+    }),
+    handler: installHandler
 })
-    .help();
-yargs_1.default
     .command({
     command: 'clear <appName>',
     describe: 'очистить зависимости для микросервиса',
@@ -68,10 +57,8 @@ yargs_1.default
             default: false
         });
     },
-    handler: clear_1.clearHandler
+    handler: clearHandler
 })
-    .help();
-yargs_1.default
     .command({
     command: 'cmd <appName> [cmd..]',
     describe: 'позволяет использовать команды внутри проектов',
@@ -93,10 +80,9 @@ yargs_1.default
             default: false
         });
     },
-    handler: cmd_1.cmdHandler
+    handler: cmdHandler
 })
-    .help();
-yargs_1.default.command({
+    .command({
     command: 'run <appName>',
     describe: 'запускает проект',
     builder: (yargs) => {
@@ -130,9 +116,9 @@ yargs_1.default.command({
             default: false
         });
     },
-    handler: run_1.runHandler
-});
-yargs_1.default.command({
+    handler: runHandler
+})
+    .command({
     command: 'compose <composeName>',
     describe: 'взаимодействие с докер композицией',
     builder: (yargs) => {
@@ -172,7 +158,7 @@ yargs_1.default.command({
             default: false
         });
     },
-    handler: compose_1.composeHandler
-});
-// Обработка всех команд
-yargs_1.default.parse();
+    handler: composeHandler
+})
+    .help()
+    .parseAsync();

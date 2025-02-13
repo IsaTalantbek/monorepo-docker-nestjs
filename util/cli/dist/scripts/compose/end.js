@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 import { findCompose } from '../find-composition.js';
-export const shutComposeHandler = (composeName, silent, del) => {
+export const endComposeHandler = (composeName, silent, del) => {
     const compose = findCompose(composeName);
     if (compose === undefined) {
         process.exit(1);

@@ -1,5 +1,6 @@
 {
     "name": "pro-cli",
+    "type": "module",
     "bin": {
         "pro": "./dist/bin/cli.js"
     }

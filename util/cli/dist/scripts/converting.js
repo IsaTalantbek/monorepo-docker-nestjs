@@ -1,25 +1,35 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.convertCRLFtoLF = convertCRLFtoLF;
-const fs_1 = __importDefault(require("fs"));
-const path_1 = __importDefault(require("path"));
-function convertCRLFtoLF(dir) {
-    const files = fs_1.default.readdirSync(dir, { withFileTypes: true });
-    for (const file of files) {
-        const fullPath = path_1.default.join(dir, file.name);
-        if (file.isDirectory()) {
-            convertCRLFtoLF(fullPath); // Рекурсивно обрабатываем вложенные директории
-        }
-        else if (file.isFile()) {
-            // Проверяем, что это действительно файл
-            let content = fs_1.default.readFileSync(fullPath, 'utf8');
-            let newContent = content.replace(/\r\n/g, '\n');
-            if (content !== newContent) {
-                fs_1.default.writeFileSync(fullPath, newContent, 'utf8');
+import fs from 'fs/promises';
+import path from 'path';
+import pLimit from 'p-limit';
+export async function convertCRLFtoLF(dir) {
+    const limit = pLimit(10); // Ограничиваем до 10 параллельных операций
+    const stack = [dir]; // Используем стек вместо рекурсии
+    while (stack.length > 0) {
+        const currentDir = stack.pop();
+        const files = await fs.readdir(currentDir, { withFileTypes: true });
+        const filePromises = files.map((file) => {
+            const fullPath = path.join(currentDir, file.name);
+            if (file.isDirectory()) {
+                stack.push(fullPath); // Добавляем директорию в стек для дальнейшей обработки
+                return undefined;
             }
-        }
+            else if (file.isFile()) {
+                return limit(async () => {
+                    try {
+                        let content = await fs.readFile(fullPath, 'utf8');
+                        let newContent = content.replace(/\r\n/g, '\n');
+                        if (content !== newContent) {
+                            await fs.writeFile(fullPath, newContent, 'utf8');
+                        }
+                    }
+                    catch (error) {
+                        console.error(`Ошибка при обработке файла ${fullPath}:`, error);
+                    }
+                });
+            }
+            return undefined;
+        });
+        // Ожидаем завершения всех операций для текущей директории
+        await Promise.allSettled(filePromises);
     }
 }
