@@ -1,0 +1,30 @@
+services:
+    /PROJECT_NAME/:
+        build:
+            context: ..
+            dockerfile: docker/dockerfile.prod
+        container_name: /PROJECT_NAME/
+        env_file:
+            - ../.env.production
+        environment:
+            - NODE_ENV=production # Указываем переменную окружения для использования нужного .env
+        ports:
+            - '${PROJECT_PORT}:3000'
+        depends_on:
+            - /PROJECT_NAME/_db
+        restart: on-failure
+    /PROJECT_NAME/_db:
+        image: postgres:16
+        container_name: /PROJECT_NAME/_db
+        ports:
+            - '${POSTGRES_PORT}:5432'
+        environment:
+            - POSTGRES_USER=${POSTGRES_USER}
+            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+            - POSTGRES_DB=${POSTGRES_DB}
+        volumes:
+            - /PROJECT_NAME/_pgdata:/var/lib/postgresql/data
+        restart: on-failure
+
+volumes:
+    /PROJECT_NAME/_pgdata:

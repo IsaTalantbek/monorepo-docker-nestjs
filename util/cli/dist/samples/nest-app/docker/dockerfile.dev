@@ -11,8 +11,11 @@ RUN npm install
 # 4. Открываем порт
 EXPOSE 3000
 
-# 5. Устанавливаем зависимость для ожидания загрузки БД
+# 5. Устанавливаем переменную окружения для Docker
+ENV NODE_ENV=development
+
+# 6. Устанавливаем зависимость для ожидания загрузки БД
 RUN apt-get update && apt-get install -y wait-for-it
 
-# 6. Запускаем команду ожидания базы данных и затем приложение
-CMD /bin/bash -c "wait-for-it database:5432 -- npm run start:dev"
+# 7. Запускаем команду ожидания базы данных и затем приложение
+CMD /bin/bash -c "wait-for-it /PROJECT_NAME/_db:5432 -- npm run start:dev"

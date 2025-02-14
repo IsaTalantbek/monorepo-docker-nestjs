@@ -5,17 +5,28 @@ import { createHandler } from '../scripts/create/create.js';
 import { installHandler } from '../scripts/dependencies/install.js';
 import { clearHandler } from '../scripts/dependencies/clear.js';
 import { cmdHandler } from '../scripts/cmd/cmd.js';
-import { runHandler } from '../scripts/run/run.js';
 import { composeHandler } from '../scripts/compose/compose.js';
+import { projHandler } from '../scripts/proj/proj.js';
+import { prismaHandler } from '../scripts/prisma/prisma.js';
 yargs(hideBin(process.argv))
     .scriptName('pro')
     .command({
-    command: 'create <type>',
+    command: 'create <type> <appName>',
     describe: 'создать app',
     builder: (yargs) => yargs
         .positional('type', {
         describe: 'тип проекта (app)',
         type: 'string'
+    })
+        .positional('appName', {
+        description: 'название проекта',
+        type: 'string'
+    })
+        .option('path', {
+        alias: 'p',
+        type: 'string',
+        description: 'выбрать директорию где будет создан проект',
+        default: undefined
     })
         .option('silent', {
         alias: 's',
@@ -27,10 +38,10 @@ yargs(hideBin(process.argv))
 })
     .command({
     command: 'install <appName>',
-    describe: 'установить зависимости для микросервиса',
+    describe: 'установить зависимости для проекта',
     builder: (yargs) => yargs
         .positional('appName', {
-        describe: 'название проекта внутри pro-cli',
+        describe: 'название проекта (внутри pro-cli)',
         type: 'string'
     })
         .option('silent', {
@@ -43,11 +54,11 @@ yargs(hideBin(process.argv))
 })
     .command({
     command: 'clear <appName>',
-    describe: 'очистить зависимости для микросервиса',
+    describe: 'очистить зависимости для проекта (удаление node_modules и package-lock.json)',
     builder: (yargs) => {
         return yargs
             .positional('appName', {
-            describe: 'название проекта внутри pro-cli',
+            describe: 'название проекта (внутри pro-cli)',
             type: 'string'
         })
             .option('silent', {
@@ -65,7 +76,7 @@ yargs(hideBin(process.argv))
     builder: (yargs) => {
         return yargs
             .positional('appName', {
-            describe: 'название проекта внутри pro-cli',
+            describe: 'название проекта (внутри pro-cli)',
             type: 'string'
         })
             .positional('cmd', {
@@ -83,30 +94,33 @@ yargs(hideBin(process.argv))
     handler: cmdHandler
 })
     .command({
-    command: 'run <appName>',
-    describe: 'запускает проект',
+    command: 'proj <appName> <action>',
+    describe: 'позволяет выполнить действие с проектом',
     builder: (yargs) => {
         return yargs
             .positional('appName', {
-            describe: 'название проекта внутри pro-cli',
+            description: 'название проекта (внутри pro-cli)',
             type: 'string'
+        })
+            .positional('action', {
+            description: 'run - запускает проект, stop/down - остановить/удалить докер композицию (если запустили композицию)'
         })
             .option('formatting', {
             alias: 'f',
             type: 'boolean',
-            description: 'конвертировать CRLF в LF перед запуском? По дефолту да. Выберите флажок если ненадо',
+            description: 'по умолчанию форматирует CRLF в LF перед запуском, выберите, чтобы отключить',
             default: true
         })
-            .option('port', {
-            alias: 'p',
-            type: 'string',
-            description: 'на какой порт перебросить докер контейнер. Использовать только с -d',
-            default: '3000'
-        })
-            .option('docker', {
+            .option('compose_dev', {
             alias: 'd',
             type: 'boolean',
-            describtion: 'запуск докерфайла, вместо обычного запуска',
+            description: 'запуск dev докер композиции, вместо обычного запуска. Если команда run',
+            default: false
+        })
+            .option('compose_prod', {
+            alias: 'p',
+            type: 'boolean',
+            description: 'запуск prod докер композиции, вместо обычного запуска. Если команда run',
             default: false
         })
             .option('silent', {
@@ -116,39 +130,25 @@ yargs(hideBin(process.argv))
             default: false
         });
     },
-    handler: runHandler
+    handler: projHandler
 })
     .command({
-    command: 'compose <composeName>',
+    command: 'compose <composeName> <action>',
     describe: 'взаимодействие с докер композицией',
     builder: (yargs) => {
         return yargs
             .positional('composeName', {
-            describe: 'название композиции внутри pro-cli',
+            description: 'название композиции (внутри pro-cli)',
             type: 'string'
         })
-            .option('run', {
-            alias: 'r',
-            type: 'boolean',
-            description: 'запускает докер композицию',
-            default: false
-        })
-            .option('end', {
-            alias: 'e',
-            type: 'boolean',
-            description: 'удаляет или останавливает композицию. Добавьте еще -d, если хотите удалить контейнеры',
-            default: false
-        })
-            .option('del', {
-            alias: 'd',
-            type: 'boolean',
-            description: 'удаляет контейнеры в композиции',
-            default: false
+            .positional('action', {
+            description: 'run - запустить, stop - отключить, down - удалить',
+            type: 'string'
         })
             .option('formatting', {
             alias: 'f',
             type: 'boolean',
-            description: 'конвертировать CRLF в LF перед запуском? По дефолту да. Выберите флажок если ненадо',
+            description: 'по умолчанию форматирует CRLF в LF перед запуском, выберите, чтобы отключить',
             default: true
         })
             .option('silent', {
@@ -159,6 +159,28 @@ yargs(hideBin(process.argv))
         });
     },
     handler: composeHandler
+})
+    .command({
+    command: 'prisma <appName> <action>',
+    describe: 'взаимодействие с призмой',
+    builder: (yargs) => {
+        return yargs
+            .positional('appName', {
+            description: 'название проекта (внутри pro-cli)',
+            type: 'string'
+        })
+            .positional('action', {
+            description: 'dev - prisma migrate dev, deploy - prisma migrate deploy, gen - prisma generate',
+            type: 'string'
+        })
+            .option('silent', {
+            alias: 's',
+            type: 'boolean',
+            description: 'запуск без вывода в консоль',
+            default: false
+        });
+    },
+    handler: prismaHandler
 })
     .help()
     .parseAsync();

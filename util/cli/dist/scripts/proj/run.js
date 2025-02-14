@@ -1,10 +1,9 @@
 import { execSync, spawn } from 'child_process';
 import { findProject } from '../find-project.js';
 import { convertCRLFtoLF } from '../converting.js';
-export const runHandler = async (argv) => {
-    const { appName, port, silent, docker, formatting } = argv;
+export const runHandler = async (appName, silent, compose_dev, compose_prod, formatting) => {
     const appPath = findProject(appName);
-    if (docker === true) {
+    if (compose_dev === true || compose_prod === true) {
         if (formatting === true) {
             silent === false
                 ? console.log(`Начинаю форматирование в LF директорию ${appPath}, можно отключить написав -f`)
@@ -14,22 +13,17 @@ export const runHandler = async (argv) => {
                 ? console.log(`Директория ${appPath} успешно конвертирована в LF`)
                 : null;
         }
-        if (!port) {
-            console.error('Вы не указали порт для докер контейнера. Он устанавливается: -p <порт>');
-            process.exit(1);
-        }
-        const randomNumber = Math.floor(10000000 + Math.random() * 90000000);
         try {
-            const buildCommand = `docker build -t my-image-${randomNumber} -f ${appPath}/docker/dockerfile.prod ./${appPath}`;
+            const environment = compose_prod === true ? '.prod' : '.dev';
+            const buildCommand = `docker-compose -f ./${appPath}/docker/docker-compose${environment}.yml up --build`;
             silent === false ? console.log(`Запуск: ${buildCommand}`) : null;
             execSync(buildCommand, { stdio: 'inherit' });
-            const runCommand = `docker run --name my-container-${randomNumber} -d -p ${port}:3000 my-image-${randomNumber}`;
-            silent === false ? console.log(`Запуск: ${runCommand}`) : null;
-            execSync(runCommand, { stdio: 'inherit' });
-            silent === false ? console.log('Контейнер успешно запущен!') : null;
+            silent === false
+                ? console.log('Композиция успешно запущена!')
+                : null;
         }
         catch (error) {
-            console.error('Ошибка при запуске контейнера: ', error.message);
+            console.error('Ошибка при запуске композиции: ', error.message);
             process.exit(1);
         }
     }

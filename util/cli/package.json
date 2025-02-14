@@ -3,5 +3,6 @@
     "type": "module",
     "bin": {
         "pro": "./dist/bin/cli.js"
-    }
+    },
+    "private": true
 }

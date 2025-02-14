@@ -1,0 +1,13 @@
+datasource db {
+  provider = "postgresql" 
+  url      = env("DATABASE_URL") // URL подключения к базе данных
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Test {
+  id   Int    @id @default(autoincrement())
+  name String
+}

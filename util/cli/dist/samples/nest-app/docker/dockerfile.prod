@@ -26,10 +26,14 @@ WORKDIR /app
 # 9. Копируем только нужные файлы из предыдущего контейнера
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/prisma ./prisma
 COPY package.json ./
 
-# 10. Открываем порт (если нужен)
-EXPOSE 3000
+# 10. Устанавливаем переменную окружения для Docker
+ENV NODE_ENV=production
 
-# 11. Запуск приложения
-CMD ["npm", "run", "start:prod"]
+# 11. Устанавливаем зависимость для ожидания загрузки БД
+RUN apt-get update && apt-get install -y wait-for-it
+
+# 12. Запускаем команду ожидания базы данных и затем приложение
+CMD /bin/bash -c "wait-for-it /PROJECT_NAME/_db:5432 -- npm run start:prod"

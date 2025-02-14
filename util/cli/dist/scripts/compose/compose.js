@@ -1,19 +1,20 @@
+import { downComposeHandler } from './down.js';
 import { runComposeHandler } from './run.js';
-import { endComposeHandler } from './end.js';
+import { stopComposeHandler } from './stop.js';
 export const composeHandler = (argv) => {
-    const { composeName, silent, formatting, run, end, del } = argv;
-    if (run === false && end === false) {
-        console.error('не выбраны run или end флажки для compose <composeName> (-r, -e)');
-        process.exit(1);
-    }
-    else if (run === true && end === true) {
-        console.error('нельзя выбрать одновременно флажки run и end в compose');
-        process.exit(1);
-    }
-    if (run === true) {
-        runComposeHandler(composeName, silent, formatting);
-    }
-    else if (end === true) {
-        endComposeHandler(composeName, silent, del);
+    const { composeName, silent, formatting, action } = argv;
+    switch (action) {
+        case 'run':
+            runComposeHandler(composeName, silent, formatting);
+            break;
+        case 'stop':
+            stopComposeHandler(composeName, silent);
+            break;
+        case 'down':
+            downComposeHandler(composeName, silent);
+            break;
+        default:
+            console.error(`${action} - неправильная команда. Доступна только run, stop, down`);
+            process.exit(1);
     }
 };

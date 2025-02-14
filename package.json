@@ -1,6 +1,5 @@
 {
     "name": "monorepo",
-    "private": true,
     "version": "1.0.1",
     "description": "monorepo-docker-nestjs project",
     "license": "ISC",
@@ -14,5 +13,6 @@
         "p-limit": "^6.2.0",
         "prettier": "^3.4.2",
         "yargs": "^17.7.2"
-    }
+    },
+    "private": true
 }
