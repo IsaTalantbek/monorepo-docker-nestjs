@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 import { findProject } from '../find-project.js';
-export const stopHandler = (appName, silent) => {
+export const downProject = (appName, silent) => {
     const projectPath = findProject(appName);
     if (projectPath === undefined) {
         process.exit(1);
@@ -9,17 +9,17 @@ export const stopHandler = (appName, silent) => {
     const prodComposePath = `${projectPath}/docker/docker-compose.prod.yml`;
     try {
         silent === false
-            ? console.log(`Начинаю остановку композиции внутри проекта: ${appName}`)
+            ? console.log(`Начинаю удаление композиции внутри проекта: ${appName}`)
             : null;
-        execSync(`docker compose -f ${devComposePath} -f ${prodComposePath} stop`, {
+        execSync(`docker compose -f ${devComposePath} -f ${prodComposePath} down`, {
             stdio: 'inherit'
         });
         silent === false
-            ? console.log(`Успешно выполнил остановку композиции внутри проекта: ${appName}`)
+            ? console.log(`Успешно выполнил удаление композиции внутри проекта: ${appName}`)
             : null;
     }
     catch (error) {
-        console.error(`Ошибка при попытке остановки композиции: ${error.message}`);
+        console.error(`Ошибка при попытке удаления композиции: ${error.message}`);
         process.exit(1);
     }
 };

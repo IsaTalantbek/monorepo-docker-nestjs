@@ -1,22 +1,21 @@
 services:
-    /PROJECT_NAME/:
+    new-project:
         build:
             context: ..
             dockerfile: docker/dockerfile.prod
-        container_name: /PROJECT_NAME/
+        container_name: new-project
         env_file:
             - ../.env.production
-        command: npm run start:dev
         environment:
             - NODE_ENV=production # Указываем переменную окружения для использования нужного .env
         ports:
-            - '${/PROJECT_NAME/_PORT}:3000'
+            - '${PROJECT_PORT}:3000'
         depends_on:
-            - /PROJECT_NAME/_db
+            - new-project_db
         restart: on-failure
-    /PROJECT_NAME/_db:
+    new-project_db:
         image: postgres:16
-        container_name: /PROJECT_NAME/_db
+        container_name: new-project_db
         ports:
             - '${POSTGRES_PORT}:5432'
         environment:
@@ -24,8 +23,8 @@ services:
             - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
             - POSTGRES_DB=${POSTGRES_DB}
         volumes:
-            - /PROJECT_NAME/_pgdata:/var/lib/postgresql/data
+            - new-project_pgdata:/var/lib/postgresql/data
         restart: on-failure
 
 volumes:
-    /PROJECT_NAME/_pgdata:
+    new-project_pgdata:

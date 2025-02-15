@@ -22,6 +22,7 @@ export const prismaHandler = (argv) => {
             silent === false
                 ? console.log(`Выполнил команду npx prisma migrate dev в ${appPath}`)
                 : null;
+            prismaGenerate(appPath, silent);
             break;
         case 'deploy':
             silent === false
@@ -38,16 +39,14 @@ export const prismaHandler = (argv) => {
             silent === false
                 ? console.log(`Выполнил команду npx prisma migrate deploy в ${appPath}`)
                 : null;
+            prismaGenerate(appPath, silent);
             break;
         case 'gen':
-            silent === false
-                ? console.log(`Запускаю команду npx prisma generate в ${appPath}`)
-                : null;
-            useCommandIn(appPath, 'npx prisma generate');
-            silent === false
-                ? console.log(`Выполнил команду npx prisma generate в ${appPath}`)
-                : null;
+            prismaGenerate(appPath, silent);
             break;
+        default:
+            console.error(`${action} - команды не существует, выберите prisma <appName> <dev/deploy/gen>`);
+            process.exit(1);
     }
 };
 function waitForDB(containerName, maxAttempts = 100, delay = 2000) {
@@ -65,4 +64,13 @@ function waitForDB(containerName, maxAttempts = 100, delay = 2000) {
         }
     }
     throw new Error('Database did not start in time');
+}
+function prismaGenerate(appPath, silent) {
+    silent === false
+        ? console.log(`Запускаю команду npx prisma generate в ${appPath}`)
+        : null;
+    useCommandIn(appPath, 'npx prisma generate');
+    silent === false
+        ? console.log(`Выполнил команду npx prisma generate в ${appPath}`)
+        : null;
 }

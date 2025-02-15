@@ -1,25 +1,24 @@
 services:
-    /PROJECT_NAME/:
+    new-project:
         volumes:
-            - ../package.json:/package.json
-            - ../src:/app/src
+            - ..:/app
+            - ../node_modules:/app/node_modules
         build:
             context: ..
-            dockerfile: docker/dockerfile.dev
-        container_name: /PROJECT_NAME/
+            dockerfile: docker/dockerfile.prod
+        container_name: new-project
         env_file:
             - ../.env.development
         environment:
             - NODE_ENV=development # Указываем переменную окружения для использования нужного .env
-        command: ${DEV_COMPOSE_COMMAND}
         ports:
-            - '${/PROJECT_NAME/_PORT}:3000'
+            - '${PROJECT_PORT}:3000'
         depends_on:
-            - /PROJECT_NAME/_db
+            - new-project_db
         restart: on-failure
-    /PROJECT_NAME/_db:
+    new-project_db:
         image: postgres:16
-        container_name: /PROJECT_NAME/_db
+        container_name: new-project_db
         ports:
             - '${POSTGRES_PORT}:5432'
         environment:
@@ -27,8 +26,8 @@ services:
             - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
             - POSTGRES_DB=${POSTGRES_DB}
         volumes:
-            - /PROJECT_NAME/_pgdata:/var/lib/postgresql/data
+            - new-project_pgdata:/var/lib/postgresql/data
         restart: on-failure
 
 volumes:
-    /PROJECT_NAME/_pgdata:
+    new-project_pgdata:

@@ -1,7 +1,8 @@
 {
     "create-projects-dir": "apps",
     "projects": {
-        "app": "apps/project"
+        "app": "apps/project",
+        "new-project": "apps/new-project"
     },
     "docker-compositions": {
         "start": {

@@ -1,7 +1,8 @@
 import { execSync, spawn } from 'child_process';
 import { findProject } from '../find-project.js';
 import { convertCRLFtoLF } from '../converting.js';
-export const runHandler = async (appName, silent, compose_dev, compose_prod, formatting) => {
+export const runHandler = async (argv) => {
+    const { appName, silent, compose_dev, compose_prod, formatting } = argv;
     const appPath = findProject(appName);
     if (compose_dev === true || compose_prod === true) {
         if (formatting === true) {

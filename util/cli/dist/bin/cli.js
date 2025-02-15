@@ -6,8 +6,9 @@ import { installHandler } from '../scripts/dependencies/install.js';
 import { clearHandler } from '../scripts/dependencies/clear.js';
 import { cmdHandler } from '../scripts/cmd/cmd.js';
 import { composeHandler } from '../scripts/compose/compose.js';
-import { projHandler } from '../scripts/proj/proj.js';
 import { prismaHandler } from '../scripts/prisma/prisma.js';
+import { stopHandler } from '../scripts/stop/handler.js';
+import { runHandler } from '../scripts/run/run.js';
 yargs(hideBin(process.argv))
     .scriptName('pro')
     .command({
@@ -83,6 +84,24 @@ yargs(hideBin(process.argv))
             describe: 'команда',
             type: 'string',
             array: true
+        });
+    },
+    handler: cmdHandler
+})
+    .command({
+    command: 'stop <appName>',
+    describe: 'позволяет остановить композицию проекта',
+    builder: (yargs) => {
+        return yargs
+            .positional('appName', {
+            description: 'название проекта (внутри pro-cli)',
+            type: 'string'
+        })
+            .option('down', {
+            alias: 'd',
+            type: 'boolean',
+            description: 'удаляет композицию после остновки',
+            default: false
         })
             .option('silent', {
             alias: 's',
@@ -91,19 +110,16 @@ yargs(hideBin(process.argv))
             default: false
         });
     },
-    handler: cmdHandler
+    handler: stopHandler
 })
     .command({
-    command: 'proj <appName> <action>',
-    describe: 'позволяет выполнить действие с проектом',
+    command: 'run <appName>',
+    describe: 'запускает проект',
     builder: (yargs) => {
         return yargs
             .positional('appName', {
             description: 'название проекта (внутри pro-cli)',
             type: 'string'
-        })
-            .positional('action', {
-            description: 'run - запускает проект, stop/down - остановить/удалить докер композицию (если запустили композицию)'
         })
             .option('formatting', {
             alias: 'f',
@@ -114,13 +130,13 @@ yargs(hideBin(process.argv))
             .option('compose_dev', {
             alias: 'd',
             type: 'boolean',
-            description: 'запуск dev докер композиции, вместо обычного запуска. Если команда run',
+            description: 'запуск dev докер композиции, вместо обычного запуска',
             default: false
         })
             .option('compose_prod', {
             alias: 'p',
             type: 'boolean',
-            description: 'запуск prod докер композиции, вместо обычного запуска. Если команда run',
+            description: 'запуск prod докер композиции, вместо обычного запуска',
             default: false
         })
             .option('silent', {
@@ -130,7 +146,7 @@ yargs(hideBin(process.argv))
             default: false
         });
     },
-    handler: projHandler
+    handler: runHandler
 })
     .command({
     command: 'compose <composeName> <action>',

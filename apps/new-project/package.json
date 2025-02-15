@@ -1,16 +1,15 @@
 {
-    "name": "/PROJECT_NAME/",
+    "name": "project",
     "version": "0.0.1",
-    "description": "Nestjs-test-/PROJECT_NAME/",
+    "description": "Nestjs-test-project",
     "author": "isat",
     "private": true,
     "license": "UNLICENSED",
     "scripts": {
         "build": "nest build",
-        "db:deploy": "npx prisma generate && npx prisma migrate deploy",
+        "db:deploy": "npx prisma migrate deploy && npx prisma generate",
         "start": "nest start",
-        "start:dev": "npm run db:deploy && npm install && nest start --watch",
-        "start:dev:full": "nodemon --watch package.json --watch prisma/schema.prisma --exec 'npm run start:dev'",
+        "start:dev": "nest start --watch",
         "start:debug": "nest start --debug --watch",
         "start:prod": "npm run db:deploy && node dist/main"
     },
@@ -29,7 +28,6 @@
         "@nestjs/cli": "^11.0.2",
         "@nestjs/schematics": "^11.0.0",
         "@types/node": "^20.3.1",
-        "nodemon": "^3.1.9",
         "source-map-support": "^0.5.21",
         "ts-node": "^10.9.1",
         "tsconfig-paths": "^4.2.0",
